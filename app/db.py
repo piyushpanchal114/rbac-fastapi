@@ -1,6 +1,6 @@
 import contextlib
 import os
-from typing import Any, AsyncIterator
+from typing import Any, AsyncIterator, AsyncGenerator
 from sqlalchemy.ext.asyncio import (create_async_engine,
                                     async_sessionmaker, AsyncSession)
 
@@ -50,6 +50,6 @@ echo_sql = bool(int(os.environ.get("ECHO_SQL", 0)))
 sessionmanager = DatabaseSessionManager(db_url, {"echo": echo_sql})
 
 
-async def get_session() -> AsyncIterator[AsyncSession]:
+async def get_session() -> AsyncGenerator[AsyncSession, None]:
     async with sessionmanager.session() as session:
         yield session

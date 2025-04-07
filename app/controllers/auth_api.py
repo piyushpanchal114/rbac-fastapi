@@ -13,7 +13,7 @@ router = APIRouter(
     responses={404: {"description": "Not found"}})
 
 
-@router.post("/register")
+@router.post("/register", status_code=status.HTTP_201_CREATED)
 async def register_user(data: auth.UserRegister,
                         session: AsyncSession = Depends(get_session)):
     """Function for registering new user"""

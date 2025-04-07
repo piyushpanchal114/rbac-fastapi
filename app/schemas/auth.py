@@ -28,3 +28,9 @@ class User(BaseModel):
     last_name: str
     email: EmailStr
     username: str
+
+
+class UserLogin(BaseModel):
+    """User Login Model"""
+    email: EmailStr
+    password: SecretStr

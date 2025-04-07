@@ -20,3 +20,11 @@ class UserRegister(BaseModel):
     username: str
     password1: SecretStr = Field(repr=False)
     password2: SecretStr = Field(repr=False)
+
+
+class User(BaseModel):
+    """User Model"""
+    first_name: str
+    last_name: str
+    email: EmailStr
+    username: str

@@ -14,8 +14,9 @@ router = APIRouter(
 
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
-async def register_user(data: auth.UserRegister,
-                        session: AsyncSession = Depends(get_session)):
+async def register_user(
+    data: auth.UserRegister,
+        session: AsyncSession = Depends(get_session)) -> auth.User:
     """Function for registering new user"""
     user_details = data.model_dump()
     if user_details["password1"] != user_details["password2"]:

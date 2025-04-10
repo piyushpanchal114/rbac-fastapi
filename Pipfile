@@ -8,6 +8,9 @@ fastapi = {extras = ["standard"], version = "*"}
 sqlalchemy = "*"
 alembic = "*"
 psycopg = "*"
+pyjwt = "*"
+passlib = "*"
+pydantic-settings = "*"
 
 [dev-packages]
 

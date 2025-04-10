@@ -4,6 +4,7 @@ from pydantic import BaseModel, EmailStr, SecretStr, Field
 class Token(BaseModel):
     """Token Schema"""
     access_token: str
+    refresh_token: str
     token_type: str
 
 

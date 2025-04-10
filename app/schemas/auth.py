@@ -10,7 +10,7 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     """Token Data Schema"""
-    username: str
+    user_id: int
 
 
 class UserRegister(BaseModel):

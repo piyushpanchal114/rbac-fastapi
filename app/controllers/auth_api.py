@@ -4,6 +4,7 @@ from sqlalchemy import select, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from config import settings
 from db import get_session
+from utils.dependancy import get_current_user
 from models.db_models import User
 from schemas import auth
 from utils.hashers import create_password_hash, verify_password
@@ -67,3 +68,9 @@ async def login(data: auth.UserLogin,
         data={"user_id": user.id}, type="refresh")
     return auth.Token(access_token=access, refresh_token=refresh,
                       token_type="bearer")
+
+
+@router.get("/me", status_code=status.HTTP_200_OK)
+async def get_me(current_user: User = Depends(get_current_user)) -> auth.User:
+    """Function for getting current user"""
+    return current_user

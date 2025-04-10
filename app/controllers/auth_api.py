@@ -7,7 +7,7 @@ from db import get_session
 from models.db_models import User
 from schemas import auth
 from utils.hashers import create_password_hash, verify_password
-from utils.token import create_access_token
+from utils.token import create_jwt_token
 
 
 router = APIRouter(
@@ -60,7 +60,10 @@ async def login(data: auth.UserLogin,
     if not verify_password(password, user.password):
         raise HTTPException(detail={"detail": "Invalid credentials"},
                             status_code=status.HTTP_400_BAD_REQUEST)
-    token = create_access_token(
-        data={"sub": user.username},
-        expires_delta=timedelta(minutes=settings.access_token_expire_minutes))
-    return auth.Token(access_token=token, token_type="bearer")
+    access = create_jwt_token(
+        data={"user_id": user.id}, type="access",
+        expires_delta=timedelta(minutes=settings.access_token_expire))
+    refresh = create_jwt_token(
+        data={"user_id": user.id}, type="refresh")
+    return auth.Token(access_token=access, refresh_token=refresh,
+                      token_type="bearer")

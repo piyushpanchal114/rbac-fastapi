@@ -9,7 +9,8 @@ class Settings(BaseSettings):
     project_name: str = "FastAPI RBAC"
     secret: str
     algorithm: str
-    access_token_expire_minutes: int
+    access_token_expire: int = 15
+    refresh_token_expire: int = 30
 
     class Config:
         env_file = "../.env"

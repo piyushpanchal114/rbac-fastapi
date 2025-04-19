@@ -35,3 +35,23 @@ async def get_current_user(token: str = Depends(oauth2_scheme),
     if user is None:
         raise credentials_exception
     return user
+
+
+async def validate_refresh_token(token: str, db: AsyncSession):
+    """Function for validating refresh token"""
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid Token")
+    try:
+        payload = jwt.decode(token, settings.secret, settings.algorithm)
+        token_type = payload.get("token_type")
+        user_id = payload.get("user_id")
+        if token_type != "refresh":
+            raise credentials_exception
+        if user_id is None:
+            raise credentials_exception
+        user = await get_user(user_id=user_id, db=db)
+        if user is None:
+            raise credentials_exception
+        return user
+    except jwt.InvalidTokenError:
+        raise credentials_exception

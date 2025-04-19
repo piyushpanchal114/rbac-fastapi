@@ -7,6 +7,7 @@ from db import get_session
 from utils.dependancy import get_current_user
 from models.db_models import User
 from schemas import auth
+from utils.dependancy import validate_refresh_token
 from utils.hashers import create_password_hash, verify_password
 from utils.token import create_jwt_token
 
@@ -48,7 +49,8 @@ async def register_user(
 
 @router.post("/login", status_code=status.HTTP_200_OK)
 async def login(data: auth.UserLogin,
-                session: AsyncSession = Depends(get_session)) -> auth.Token:
+                session: AsyncSession = Depends(get_session)
+                ) -> auth.TokenResponse:
     creds = data.model_dump()
     password = creds["password"].get_secret_value()
     qs = await session.scalars(
@@ -66,8 +68,20 @@ async def login(data: auth.UserLogin,
         expires_delta=timedelta(minutes=settings.access_token_expire))
     refresh = create_jwt_token(
         data={"user_id": user.id}, type="refresh")
-    return auth.Token(access_token=access, refresh_token=refresh,
-                      token_type="bearer")
+    return auth.TokenResponse(access_token=access, refresh_token=refresh,
+                              token_type="bearer")
+
+
+@router.post("/refresh", status_code=status.HTTP_200_OK)
+async def refresh(data: auth.Token,
+                  session: AsyncSession = Depends(get_session)):
+    token_data = data.model_dump()
+    token = token_data["token"]
+    user = await validate_refresh_token(token=token, db=session)
+    access = create_jwt_token(
+        data={"user_id": user.id}, type="access",
+        expires_delta=timedelta(minutes=settings.access_token_expire))
+    return auth.Token(token=access)
 
 
 @router.get("/me", status_code=status.HTTP_200_OK)

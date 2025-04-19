@@ -23,6 +23,9 @@ async def get_current_user(token: str = Depends(oauth2_scheme),
     try:
         payload = jwt.decode(token, settings.secret, settings.algorithm)
         user_id = payload.get("user_id")
+        token_type = payload.get("token_type")
+        if token_type != "access":
+            raise credentials_exception
         if user_id is None:
             raise credentials_exception
         token_data = TokenData(user_id=user_id)

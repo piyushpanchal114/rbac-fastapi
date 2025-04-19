@@ -1,12 +1,12 @@
 from pydantic import BaseModel, EmailStr, SecretStr, Field
 
 
-class RefreshToken(BaseModel):
-    """Refresh Token Schema"""
-    refresh_token: str
+class Token(BaseModel):
+    """Token Schema"""
+    token: str
 
 
-class Token(RefreshToken):
+class TokenResponse(BaseModel):
     """Token Schema"""
     access_token: str
     refresh_token: str
